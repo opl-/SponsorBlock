@@ -56,6 +56,7 @@ class SkipNoticeComponent extends React.Component<SkipNoticeProps, SkipNoticeSta
 
     noticeRef: React.MutableRefObject<NoticeComponent>;
     categoryOptionRef: React.RefObject<HTMLSelectElement>;
+    skipButtonRef: React.RefObject<HTMLButtonElement>;
 
     // Used to update on config change
     configListener: () => void;
@@ -64,6 +65,7 @@ class SkipNoticeComponent extends React.Component<SkipNoticeProps, SkipNoticeSta
         super(props);
         this.noticeRef = React.createRef();
         this.categoryOptionRef = React.createRef();
+        this.skipButtonRef = React.createRef();
 
         this.segments = props.segments;
         this.autoSkip = props.autoSkip;
@@ -195,6 +197,7 @@ class SkipNoticeComponent extends React.Component<SkipNoticeProps, SkipNoticeSta
                         <button id={"sponsorSkipUnskipButton" + this.idSuffix}
                             className="sponsorSkipObject sponsorSkipNoticeButton"
                             style={{marginLeft: "4px"}}
+                            ref={this.skipButtonRef}
                             onClick={() => this.prepAction(SkipNoticeAction.Unskip)}>
 
                             {this.state.unskipText + " (" + Config.config.skipKeybind + ")"}
@@ -346,6 +349,8 @@ class SkipNoticeComponent extends React.Component<SkipNoticeProps, SkipNoticeSta
                 break;
             case SkipNoticeAction.Unskip:
                 this.state.unskipCallback(index);
+                // Unfocus button to prevent enter from triggering it again
+                this.skipButtonRef.current.blur();
                 break;
         }
 
@@ -427,6 +432,9 @@ class SkipNoticeComponent extends React.Component<SkipNoticeProps, SkipNoticeSta
         this.contentContainer().unskipSponsorTime(this.segments[index]);
 
         this.unskippedMode(index, chrome.i18n.getMessage("reskip"));
+
+        // Unfocus button to prevent space from triggering it again
+        this.skipButtonRef.current.blur();
     }
 
     /** Sets up notice to be not skipped yet */

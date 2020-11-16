@@ -1187,6 +1187,9 @@ function startOrEndTimingNewSegment() {
         Config.config.segmentTimes.set(sponsorVideoID, sponsorTimesSubmitting);
     }
 
+    // Unfocus button to prevent space from triggering it again
+    playerButtons.startSponsor.button.blur();
+
     updateEditButtonsOnPlayer();
 
     updateSponsorTimesSubmitting(false);
